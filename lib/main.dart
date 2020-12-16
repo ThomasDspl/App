@@ -4,9 +4,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'FicheProduit.dart';
+import 'FicheProduit.dart';
+import 'FicheProduit.dart';
 import 'second_screen.dart' as ss;
+import 'FicheProduit.dart' as FicheProduit;
 
 List<Recette> panier = [];
+
+const String ROUTE_DETAIL = "/details";
+const String APP_NAME = "Chez Hatsune Miku";
 
 const String json = '''
 [
@@ -113,6 +120,15 @@ class RecetteWidget extends StatefulWidget {
 }
 
 class _RecetteWidgetState extends State<RecetteWidget> {
+  void _awaitReturnValueFromDetailsScreen(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, ROUTE_DETAIL,
+        arguments: FicheProduit.FicheProduitArguments(widget.recette));
+
+    setState(() {
+      if (result != null) widget.recette.state = result;
+    });
+  }
+
   void _setCheckBox(bool state) {
     setState(() {
       widget.recette.state = state;
@@ -136,10 +152,7 @@ class _RecetteWidgetState extends State<RecetteWidget> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/castex',
-                      arguments: ss.SecondScreenArguments(
-                          widget.recette.id + " " + widget.recette.title,
-                          widget.recette));
+                  _awaitReturnValueFromDetailsScreen(context);
                 },
                 child: Image.asset(widget.recette.photoUrl),
               ),
@@ -202,19 +215,19 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/') {
           return MaterialPageRoute(
               builder: (context) => MyHomePage(
-                    title: "LOL",
+                    title: APP_NAME,
                   ));
         }
 
-        if (settings.name == '/castex') {
-          final ss.SecondScreenArguments args = settings.arguments;
+        if (settings.name == ROUTE_DETAIL) {
+          final FicheProduit.FicheProduitArguments args = settings.arguments;
 
           return MaterialPageRoute(builder: (context) {
-            return ss.SecondScreen(title: args.title, recette: args.recette);
+            return FicheProduit.FicheProduit(recette: args.recette);
           });
         }
       },
-      title: '🍗',
+      title: APP_NAME,
       theme: ThemeData(
         // This is the theme of your application.
         //
