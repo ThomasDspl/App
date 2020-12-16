@@ -1,0 +1,16 @@
+[
+    {
+        "id": "0",
+        "name": "spaghetti bolo_gnaise",
+        "description": "MES PRECIEUX ..... SPAGHETTI",
+        "prix": 10,
+        "photo": "images/spaghetti_bolo_gnaise.png"
+    },
+    {
+        "id": "1",
+        "name": "spaghetti bolo_gnaise",
+        "description": "MES PRECIEUX ..... SPAGHETTI",
+        "prix": 15,
+        "photo": "images/spaghetti_bolo_gnaise.png"
+    }
+]
