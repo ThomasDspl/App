@@ -4,10 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'FicheProduit.dart';
-import 'FicheProduit.dart';
-import 'FicheProduit.dart';
-import 'second_screen.dart' as ss;
 import 'FicheProduit.dart' as FicheProduit;
 
 List<Recette> panier = [];
@@ -228,8 +224,8 @@ class MyApp extends StatelessWidget {
         }
         return MaterialPageRoute(
             builder: (context) => MyHomePage(
-              title: APP_NAME,
-            ));
+                  title: APP_NAME,
+                ));
       },
       title: APP_NAME,
       theme: ThemeData(
