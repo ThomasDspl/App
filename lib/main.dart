@@ -226,6 +226,10 @@ class MyApp extends StatelessWidget {
             return FicheProduit.FicheProduit(recette: args.recette);
           });
         }
+        return MaterialPageRoute(
+            builder: (context) => MyHomePage(
+              title: APP_NAME,
+            ));
       },
       title: APP_NAME,
       theme: ThemeData(
