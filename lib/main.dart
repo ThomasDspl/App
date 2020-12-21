@@ -91,10 +91,16 @@ class Recette {
   final String photoUrl;
   final String description;
   final int prix;
-  final List<dynamic>  allergenes;
+  final List<dynamic> allergenes;
   bool state = false;
 
-  Recette({this.id, this.title, this.photoUrl, this.description, this.prix, this.allergenes});
+  Recette(
+      {this.id,
+      this.title,
+      this.photoUrl,
+      this.description,
+      this.prix,
+      this.allergenes});
 
   factory Recette.fromJson(Map<String, dynamic> json) {
     return Recette(
@@ -103,7 +109,7 @@ class Recette {
       description: json["description"] as String,
       photoUrl: json["photo"] as String,
       prix: json["prix"] as int,
-      allergenes : json ["allergenes"] as List<dynamic>,
+      allergenes: json["allergenes"] as List<dynamic>,
     );
   }
 
@@ -192,7 +198,7 @@ class RecetteList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
+        crossAxisCount: 2,
       ),
       itemCount: recette.length,
       padding: const EdgeInsets.all(8),
@@ -287,10 +293,6 @@ List<Recette> getRecetteFromJson(String jsonData) {
   final parsed = jsonDecode(jsonData).cast<Map<String, dynamic>>();
 
   _listRecette = parsed.map<Recette>((json) => Recette.fromJson(json)).toList();
-
-  _listRecette.forEach((element) {
-    print(element);
-  });
 
   return _listRecette;
 }

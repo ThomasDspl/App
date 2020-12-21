@@ -117,22 +117,25 @@ class _FicheProduitState extends State<FicheProduit> {
         ),
       );
 
-  Widget textallergenes() =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        Text(
-          "Allergènes : ",
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        for (var allergenes in widget.recette.allergenes)
-          Text(
-            "- " + allergenes,
-            style: TextStyle(
-              height: 1.5,
-
-            ),
-          )
-      ]);
+  Widget textallergenes() => Container(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "Allergènes : ",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              for (var allergenes in widget.recette.allergenes)
+                Text(
+                  "- " + allergenes,
+                  style: TextStyle(
+                    height: 1.5,
+                  ),
+                )
+            ]),
+        padding: const EdgeInsets.all(32),
+      );
 }
