@@ -45,8 +45,6 @@ flutter:
     - family: Comfortaa
       fonts:
         - asset: fonts/Comfortaa-Regular.ttf
-  assets:
-    - images/risitas.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
