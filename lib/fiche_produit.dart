@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'cart_bloc.dart';
 import 'main.dart';
 
 class FicheProduitArguments {
@@ -22,6 +24,19 @@ class _FicheProduitState extends State<FicheProduit> {
   void _checkbox(bool value) {
     setState(() {
       widget.recette.state = value;
+      switch (value) {
+        case true:
+          panier.add(widget.recette);
+          Provider.of<CartBloc>(context, listen: false)
+              .addToCart(widget.recette);
+          break;
+        case false:
+          panier.remove(widget.recette);
+          Provider.of<CartBloc>(context, listen: false).clear(widget.recette);
+
+          break;
+      }
+      print(Provider.of<CartBloc>(context, listen: false).cart);
     });
   }
 
