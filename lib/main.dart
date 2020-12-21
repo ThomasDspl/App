@@ -8,17 +8,16 @@ import 'fiche_produit.dart' as FicheProduit;
 import 'cart_bloc.dart';
 import 'confirmation.dart';
 
-List<Recette> panier = [];
-
 const String ROUTE_DETAIL = "/details";
 const String ROUTE_CONFIRMATION = "/confirm";
 const String APP_NAME = "Chez Hatsune Miku";
+const Color COULEUR_PRINCIPALE = Color.fromRGBO(255, 231, 76, 1.0);
 const String json = '''
 [
     {
         "id": "0",
         "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tellus suscipit, mollis purus ac, auctor risus. Nam lacinia erat ac tellus accumsan, ac accumsan mauris tempus. Etiam eu ornare enim, ut tincidunt velit. Fusce cursus, enim eget tincidunt tempus, sapien sapien tincidunt orci, sed blandit purus sapien sit amet magna. Donec auctor lacinia odio non ultrices. Nam laoreet accumsan sapien id molestie. Phasellus laoreet gravida eros quis vestibulum. Phasellus pretium eros a libero cursus lobortis. Curabitur eu dui et est tincidunt varius commodo a sem. Etiam et arcu ut enim egestas cursus. Mauris non convallis sem. Donec eget leo non neque vulputate tempus.",
         "prix": 10,
         "photo": "images/spaghetti_bolo_gnaise.png",
         "allergenes": ["Lorem ipsum","blabla","Lorem ipsum"]
@@ -26,10 +25,10 @@ const String json = '''
     {
         "id": "1",
         "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
+        "description": "Lorem ipsum dolor sit amet.",
         "prix": 15,
         "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","blabla2","Lorem ipsum"]
+        "allergenes": ["pâtes","sauce tomate","boeuf"]
     },
     {
         "id": "2",
@@ -150,12 +149,10 @@ class _RecetteWidgetState extends State<RecetteWidget> {
         widget.recette.state = state;
         switch (state) {
           case true:
-            panier.add(widget.recette);
             Provider.of<CartBloc>(context, listen: false)
                 .addToCart(widget.recette);
             break;
           case false:
-            panier.remove(widget.recette);
             Provider.of<CartBloc>(context, listen: false).clear(widget.recette);
             break;
         }
@@ -202,7 +199,12 @@ class _RecetteWidgetState extends State<RecetteWidget> {
                         ],
                       ),
                       Container(
-                        child: Text(widget.recette.description, softWrap: true),
+                        child: Text(
+                          widget.recette.description,
+                          softWrap: true,
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       )
                     ],
                   )),
@@ -281,7 +283,7 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
-          primaryColor: Color.fromRGBO(255, 231, 76, 1.0),
+          primaryColor: COULEUR_PRINCIPALE,
           // This makes the visual density adapt to the platform that you run
           // the app on. For desktop platforms, the controls will be smaller and
           // closer together (more dense) than on mobile platforms.
@@ -351,7 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-AppBar appBar(BuildContext context, String title) {
+AppBar appBar(BuildContext context, String title, {bool panier = true}) {
   var bloc = Provider.of<CartBloc>(context, listen: false);
 
   int totalCount = 0;
@@ -384,14 +386,16 @@ AppBar appBar(BuildContext context, String title) {
     // the App.build method, and use it to set our appbar title.
     title: Text(title),
     actions: <Widget>[
-      Container(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, ROUTE_CONFIRMATION);
-          },
-          child: _buildCartIcon(totalCount),
-        ),
-      )
+      (panier)
+          ? Container(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, ROUTE_CONFIRMATION);
+                },
+                child: _buildCartIcon(totalCount),
+              ),
+            )
+          : Text("")
     ],
   );
 }
