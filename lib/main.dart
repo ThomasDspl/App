@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'FicheProduit.dart' as FicheProduit;
 
@@ -18,42 +17,48 @@ const String json = '''
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 10,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","blabla","Lorem ipsum"]
     },
     {
         "id": "1",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","blabla2","Lorem ipsum"]
     },
     {
         "id": "2",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     },
     {
         "id": "3",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     },
     {
         "id": "4",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 10,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     },
     {
         "id": "5",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     },
     {
         "id": "6",
@@ -61,13 +66,15 @@ const String json = '''
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
         "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     },
     {
         "id": "7",
         "name": "spaghetti bolo_gnaise",
         "description": "MES PRECIEUX ..... SPAGHETTI",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png"
+        "photo": "images/spaghetti_bolo_gnaise.png",
+        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
     }
 ]
 ''';
@@ -84,9 +91,10 @@ class Recette {
   final String photoUrl;
   final String description;
   final int prix;
+  final List<dynamic>  allergenes;
   bool state = false;
 
-  Recette({this.id, this.title, this.photoUrl, this.description, this.prix});
+  Recette({this.id, this.title, this.photoUrl, this.description, this.prix, this.allergenes});
 
   factory Recette.fromJson(Map<String, dynamic> json) {
     return Recette(
@@ -95,6 +103,7 @@ class Recette {
       description: json["description"] as String,
       photoUrl: json["photo"] as String,
       prix: json["prix"] as int,
+      allergenes : json ["allergenes"] as List<dynamic>,
     );
   }
 

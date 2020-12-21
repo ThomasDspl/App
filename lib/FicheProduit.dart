@@ -12,6 +12,7 @@ class FicheProduit extends StatefulWidget {
   // This widget is the root of your application.
 
   final Recette recette;
+
   const FicheProduit({Key key, this.recette}) : super(key: key);
 
   @override
@@ -43,6 +44,7 @@ class _FicheProduitState extends State<FicheProduit> {
             ),
             titleSection(widget.recette.title, widget.recette.prix),
             textSection(),
+            textallergenes(),
           ],
         ),
       ),
@@ -114,4 +116,23 @@ class _FicheProduitState extends State<FicheProduit> {
           softWrap: true,
         ),
       );
+
+  Widget textallergenes() =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+        Text(
+          "Allergènes : ",
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        for (var allergenes in widget.recette.allergenes)
+          Text(
+            "- " + allergenes,
+            style: TextStyle(
+              height: 1.5,
+
+            ),
+          )
+      ]);
 }
