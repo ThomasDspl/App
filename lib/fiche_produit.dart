@@ -32,6 +32,7 @@ class _FicheProduitState extends State<FicheProduit> {
           break;
         case false:
           Provider.of<CartBloc>(context, listen: false).clear(widget.recette);
+
           break;
       }
       print(Provider.of<CartBloc>(context, listen: false).cart);
@@ -80,26 +81,26 @@ class _FicheProduitState extends State<FicheProduit> {
     );
   }
 
-  Column _buildButtonColumn(Color color, IconData icon, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: color),
-        Container(
-          margin: const EdgeInsets.only(top: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Column _buildButtonColumn(Color color, IconData icon, String label) {
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       Icon(icon, color: color),
+  //       Container(
+  //         margin: const EdgeInsets.only(top: 8),
+  //         child: Text(
+  //           label,
+  //           style: TextStyle(
+  //             fontSize: 12,
+  //             fontWeight: FontWeight.w400,
+  //             color: color,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget titleSection(String title, int prix) => Container(
         padding: const EdgeInsets.all(32),

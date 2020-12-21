@@ -117,7 +117,6 @@ class Recette {
 
   @override
   String toString() {
-    // TODO: implement toString
     return "ID: " + id;
   }
 }
