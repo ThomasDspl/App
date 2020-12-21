@@ -164,32 +164,48 @@ class _RecetteWidgetState extends State<RecetteWidget> {
     }
 
     return Container(
+      padding: const EdgeInsets.all(4),
       child: Container(
-          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                  color: Color.fromRGBO(255, 89, 100, 1.0), width: 0.5),
+              borderRadius: BorderRadius.circular(5.0)),
+          //padding: const EdgeInsets.all(4),
           child: Column(
             children: [
               InkWell(
                 onTap: () {
                   _awaitReturnValueFromDetailsScreen(context);
                 },
-                child: Image.asset(widget.recette.photoUrl),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(widget.recette.title),
-                    Checkbox(
-                      value: widget.recette.state,
-                      onChanged: _setCheckBox,
-                    ),
-                  ],
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Image.asset(
+                    widget.recette.photoUrl,
+                  ),
                 ),
               ),
               Container(
-                child: Text(widget.recette.description, softWrap: true),
-              )
+                  padding: const EdgeInsets.all(4),
+                  child: Column(
+                    children: [
+                      Text(widget.recette.title),
+                      Row(
+                        children: [
+                          Expanded(
+                              child:
+                                  Text(widget.recette.prix.toString() + " €")),
+                          Checkbox(
+                            value: widget.recette.state,
+                            onChanged: _setCheckBox,
+                          ),
+                        ],
+                      ),
+                      Container(
+                        child: Text(widget.recette.description, softWrap: true),
+                      )
+                    ],
+                  )),
             ],
           )),
     );
@@ -205,8 +221,7 @@ class RecetteList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
+          crossAxisCount: 2, childAspectRatio: 0.7),
       itemCount: recette.length,
       padding: const EdgeInsets.all(8),
       itemBuilder: (context, index) {
@@ -266,7 +281,7 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
-          primarySwatch: Colors.blue,
+          primaryColor: Color.fromRGBO(255, 231, 76, 1.0),
           // This makes the visual density adapt to the platform that you run
           // the app on. For desktop platforms, the controls will be smaller and
           // closer together (more dense) than on mobile platforms.
@@ -348,20 +363,20 @@ AppBar appBar(BuildContext context, String title) {
       child: Stack(
         children: <Widget>[
           new Icon(Icons.shopping_cart),
-          new Positioned(
-            child: new Icon(
-              Icons.circle,
-              color: Color.fromRGBO(100, 0, 0, 1),
-              size: 15,
-            ),
-            left: 10,
-          ),
-          new Positioned(
-            child:
-                new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
-            left: 15,
-            top: 2,
-          )
+          // new Positioned(
+          //   child: new Icon(
+          //     Icons.circle,
+          //     color: Color.fromRGBO(100, 0, 0, 1),
+          //     size: 15,
+          //   ),
+          //   left: 10,
+          // ),
+          // new Positioned(
+          //   child:
+          //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
+          //   left: 15,
+          //   top: 2,
+          // )
         ],
       ));
   return AppBar(
