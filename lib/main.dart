@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'FicheProduit.dart' as FicheProduit;
+import 'fiche_produit.dart' as FicheProduit;
+import 'cart_bloc.dart';
+import 'confirmation.dart';
 
 List<Recette> panier = [];
 
 const String ROUTE_DETAIL = "/details";
+const String ROUTE_CONFIRMATION = "/confirm";
 const String APP_NAME = "Chez Hatsune Miku";
-
 const String json = '''
 [
     {
@@ -140,22 +143,26 @@ class _RecetteWidgetState extends State<RecetteWidget> {
     });
   }
 
-  void _setCheckBox(bool state) {
-    setState(() {
-      widget.recette.state = state;
-      switch (state) {
-        case true:
-          panier.add(widget.recette);
-          break;
-        case false:
-          panier.remove(widget.recette);
-          break;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    void _setCheckBox(bool state) {
+      setState(() {
+        widget.recette.state = state;
+        switch (state) {
+          case true:
+            panier.add(widget.recette);
+            Provider.of<CartBloc>(context, listen: false)
+                .addToCart(widget.recette);
+            break;
+          case false:
+            panier.remove(widget.recette);
+            Provider.of<CartBloc>(context, listen: false).clear(widget.recette);
+            break;
+        }
+        print(Provider.of<CartBloc>(context, listen: false).cart);
+      });
+    }
+
     return Container(
       child: Container(
           padding: const EdgeInsets.all(8),
@@ -216,48 +223,55 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      // routes: {
-      //   '/': (context) => MyHomePage(title: 'LOL'),
-      //   '/castex': (context) => ss.SecondScreen(title: "Second Screen"),
-      // },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/') {
+    return ChangeNotifierProvider<CartBloc>(
+      create: (context) => CartBloc(),
+      child: MaterialApp(
+        initialRoute: '/',
+        // routes: {
+        //   '/': (context) => MyHomePage(title: 'LOL'),
+        //   '/castex': (context) => ss.SecondScreen(title: "Second Screen"),
+        // },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/') {
+            return MaterialPageRoute(
+                builder: (context) => MyHomePage(
+                      title: APP_NAME,
+                    ));
+          }
+
+          if (settings.name == ROUTE_CONFIRMATION) {
+            return MaterialPageRoute(builder: (context) => Confirmation());
+          }
+
+          if (settings.name == ROUTE_DETAIL) {
+            final FicheProduit.FicheProduitArguments args = settings.arguments;
+
+            return MaterialPageRoute(builder: (context) {
+              return FicheProduit.FicheProduit(recette: args.recette);
+            });
+          }
           return MaterialPageRoute(
               builder: (context) => MyHomePage(
                     title: APP_NAME,
                   ));
-        }
-
-        if (settings.name == ROUTE_DETAIL) {
-          final FicheProduit.FicheProduitArguments args = settings.arguments;
-
-          return MaterialPageRoute(builder: (context) {
-            return FicheProduit.FicheProduit(recette: args.recette);
-          });
-        }
-        return MaterialPageRoute(
-            builder: (context) => MyHomePage(
-                  title: APP_NAME,
-                ));
-      },
-      title: APP_NAME,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        },
+        title: APP_NAME,
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+          // This makes the visual density adapt to the platform that you run
+          // the app on. For desktop platforms, the controls will be smaller and
+          // closer together (more dense) than on mobile platforms.
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
       ),
     );
   }
@@ -291,7 +305,7 @@ List<Recette> getRecetteFromJson(String jsonData) {
   List<Recette> _listRecette = [];
   //var data = json.decode(jsonData);
   final parsed = jsonDecode(jsonData).cast<Map<String, dynamic>>();
-
+  print(parsed);
   _listRecette = parsed.map<Recette>((json) => Recette.fromJson(json)).toList();
 
   return _listRecette;
@@ -307,11 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      appBar: appBar(context, widget.title),
       body: FutureBuilder<List<Recette>>(
         future: getData(),
         builder: (context, snapshot) {
@@ -324,4 +334,49 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+AppBar appBar(BuildContext context, String title) {
+  var bloc = Provider.of<CartBloc>(context, listen: false);
+
+  int totalCount = 0;
+  if (bloc.cart.length > 0) {
+    totalCount = bloc.cart.values.reduce((a, b) => a + b);
+  }
+  Container _buildCartIcon(totalCount) => Container(
+      alignment: Alignment.center,
+      child: Stack(
+        children: <Widget>[
+          new Icon(Icons.shopping_cart),
+          new Positioned(
+            child: new Icon(
+              Icons.circle,
+              color: Color.fromRGBO(100, 0, 0, 1),
+              size: 15,
+            ),
+            left: 10,
+          ),
+          new Positioned(
+            child:
+                new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
+            left: 15,
+            top: 2,
+          )
+        ],
+      ));
+  return AppBar(
+    // Here we take the value from the MyHomePage object that was created by
+    // the App.build method, and use it to set our appbar title.
+    title: Text(title),
+    actions: <Widget>[
+      Container(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, ROUTE_CONFIRMATION);
+          },
+          child: _buildCartIcon(totalCount),
+        ),
+      )
+    ],
+  );
 }
