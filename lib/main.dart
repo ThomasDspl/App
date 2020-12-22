@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:App/cart_page.dart';
+import 'package:App/data_recette_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +11,8 @@ import 'cart_bloc.dart';
 import 'confirmation.dart';
 
 const String ROUTE_DETAIL = "/details";
-const String ROUTE_CONFIRMATION = "/confirm";
+const String ROUTE_CART = "/cart";
+const String ROUTE_CONFIRMATION = "/confirmation";
 const String APP_NAME = "Chez Hatsune Miku";
 const Color COULEUR_PRINCIPALE = Color.fromRGBO(255, 231, 76, 1.0);
 const String json = '''
@@ -143,72 +146,74 @@ class _RecetteWidgetState extends State<RecetteWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var recette =
+        Provider.of<RecetteDataBloc>(context).getRecette(widget.recette);
     void _setCheckBox(bool state) {
       setState(() {
-        widget.recette.state = state;
+        recette.state = state;
         switch (state) {
           case true:
-            Provider.of<CartBloc>(context, listen: false)
-                .addToCart(widget.recette);
+            Provider.of<CartBloc>(context, listen: false).addToCart(recette);
             break;
           case false:
-            Provider.of<CartBloc>(context, listen: false).clear(widget.recette);
+            Provider.of<CartBloc>(context, listen: false).clear(recette);
             break;
         }
         print(Provider.of<CartBloc>(context, listen: false).cart);
       });
     }
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                  color: Color.fromRGBO(255, 89, 100, 1.0), width: 0.5),
-              borderRadius: BorderRadius.circular(5.0)),
-          //padding: const EdgeInsets.all(4),
-          child: Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  _awaitReturnValueFromDetailsScreen(context);
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Image.asset(
-                    widget.recette.photoUrl,
+    return Consumer<RecetteDataBloc>(
+      builder: (context, value, child) => Container(
+        padding: const EdgeInsets.all(4),
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                    color: Color.fromRGBO(255, 89, 100, 1.0), width: 0.5),
+                borderRadius: BorderRadius.circular(5.0)),
+            //padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    _awaitReturnValueFromDetailsScreen(context);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Image.asset(
+                      recette.photoUrl,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                  padding: const EdgeInsets.all(4),
-                  child: Column(
-                    children: [
-                      Text(widget.recette.title),
-                      Row(
-                        children: [
-                          Expanded(
-                              child:
-                                  Text(widget.recette.prix.toString() + " €")),
-                          Checkbox(
-                            value: widget.recette.state,
-                            onChanged: _setCheckBox,
-                          ),
-                        ],
-                      ),
-                      Container(
-                        child: Text(
-                          widget.recette.description,
-                          softWrap: true,
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
+                Container(
+                    padding: const EdgeInsets.all(4),
+                    child: Column(
+                      children: [
+                        Text(recette.title),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Text(recette.prix.toString() + " €")),
+                            Checkbox(
+                              value: recette.state,
+                              onChanged: _setCheckBox,
+                            ),
+                          ],
                         ),
-                      )
-                    ],
-                  )),
-            ],
-          )),
+                        Container(
+                          child: Text(
+                            widget.recette.description,
+                            softWrap: true,
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ],
+                    )),
+              ],
+            )),
+      ),
     );
   }
 }
@@ -239,8 +244,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CartBloc>(
-      create: (context) => CartBloc(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CartBloc>(create: (context) => CartBloc()),
+        ChangeNotifierProvider<RecetteDataBloc>(
+            create: (context) => RecetteDataBloc()),
+      ],
       child: MaterialApp(
         initialRoute: '/',
         // routes: {
@@ -253,6 +262,10 @@ class MyApp extends StatelessWidget {
                 builder: (context) => MyHomePage(
                       title: APP_NAME,
                     ));
+          }
+
+          if (settings.name == ROUTE_CART) {
+            return MaterialPageRoute(builder: (context) => PageCart());
           }
 
           if (settings.name == ROUTE_CONFIRMATION) {
@@ -311,10 +324,10 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-Future<List<Recette>> getData() async {
+List<Recette> getData() {
   //final response = rootBundle.loadString("data.json");
-
-  return getRecetteFromJson(json);
+  List<Recette> list = getRecetteFromJson(json);
+  return list;
 }
 
 List<Recette> getRecetteFromJson(String jsonData) {
@@ -323,7 +336,6 @@ List<Recette> getRecetteFromJson(String jsonData) {
   final parsed = jsonDecode(jsonData).cast<Map<String, dynamic>>();
   print(parsed);
   _listRecette = parsed.map<Recette>((json) => Recette.fromJson(json)).toList();
-
   return _listRecette;
 }
 
@@ -338,63 +350,66 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: appBar(context, widget.title),
-      body: FutureBuilder<List<Recette>>(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-
-          return snapshot.hasData
-              ? RecetteList(recette: snapshot.data)
-              : Center(child: CircularProgressIndicator());
+      body: Consumer<RecetteDataBloc>(
+        builder: (context, bloc, child) {
+          return (bloc.list.isEmpty)
+              ? Center(child: CircularProgressIndicator())
+              : RecetteList(recette: bloc.list);
         },
       ),
     );
   }
-}
 
-AppBar appBar(BuildContext context, String title, {bool panier = true}) {
-  var bloc = Provider.of<CartBloc>(context, listen: false);
+  AppBar appBar(BuildContext context, String title, {bool panier = true}) {
+    void _route(BuildContext context) async {
+      await Navigator.pushNamed(context, ROUTE_CART);
 
-  int totalCount = 0;
-  if (bloc.cart.length > 0) {
-    totalCount = bloc.cart.values.reduce((a, b) => a + b);
+      setState(() {});
+    }
+
+    var bloc = Provider.of<CartBloc>(context, listen: false);
+
+    int totalCount = 0;
+    if (bloc.cart.length > 0) {
+      totalCount = bloc.cart.length;
+    }
+    Container _buildCartIcon(totalCount) => Container(
+        alignment: Alignment.center,
+        child: Stack(
+          children: <Widget>[
+            new Icon(Icons.shopping_cart),
+            // new Positioned(
+            //   child: new Icon(
+            //     Icons.circle,
+            //     color: Color.fromRGBO(100, 0, 0, 1),
+            //     size: 15,
+            //   ),
+            //   left: 10,
+            // ),
+            // new Positioned(
+            //   child:
+            //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
+            //   left: 15,
+            //   top: 2,
+            // )
+          ],
+        ));
+    return AppBar(
+      // Here we take the value from the MyHomePage object that was created by
+      // the App.build method, and use it to set our appbar title.
+      title: Text(title),
+      actions: <Widget>[
+        (panier)
+            ? Container(
+                child: GestureDetector(
+                  onTap: () {
+                    _route(context);
+                  },
+                  child: _buildCartIcon(totalCount),
+                ),
+              )
+            : Text("")
+      ],
+    );
   }
-  Container _buildCartIcon(totalCount) => Container(
-      alignment: Alignment.center,
-      child: Stack(
-        children: <Widget>[
-          new Icon(Icons.shopping_cart),
-          // new Positioned(
-          //   child: new Icon(
-          //     Icons.circle,
-          //     color: Color.fromRGBO(100, 0, 0, 1),
-          //     size: 15,
-          //   ),
-          //   left: 10,
-          // ),
-          // new Positioned(
-          //   child:
-          //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
-          //   left: 15,
-          //   top: 2,
-          // )
-        ],
-      ));
-  return AppBar(
-    // Here we take the value from the MyHomePage object that was created by
-    // the App.build method, and use it to set our appbar title.
-    title: Text(title),
-    actions: <Widget>[
-      (panier)
-          ? Container(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, ROUTE_CONFIRMATION);
-                },
-                child: _buildCartIcon(totalCount),
-              ),
-            )
-          : Text("")
-    ],
-  );
 }

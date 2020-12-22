@@ -1,22 +1,22 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'main.dart';
 
 class CartBloc with ChangeNotifier {
-  Map<Recette, int> _cart = {};
+  List<Recette> _cart = [];
 
-  Map<Recette, int> get cart => _cart;
+  UnmodifiableListView<Recette> get cart => UnmodifiableListView(_cart);
 
   void addToCart(recette) {
-    if (_cart.containsKey(recette)) {
-      _cart[recette] += 1;
-    } else {
-      _cart[recette] = 1;
+    if (!_cart.contains(recette)) {
+      _cart.add(recette);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void clear(recette) {
-    if (_cart.containsKey(recette)) {
+    if (_cart.contains(recette)) {
       _cart.remove(recette);
       notifyListeners();
     }
@@ -25,5 +25,13 @@ class CartBloc with ChangeNotifier {
   void clearAll() {
     _cart.clear();
     notifyListeners();
+  }
+
+  int totalPrice() {
+    int total = 0;
+    _cart.forEach((element) {
+      total += element.prix;
+    });
+    return total;
   }
 }

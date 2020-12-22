@@ -5,7 +5,7 @@ class Confirmation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar(context, APP_NAME, panier: false),
+        appBar: appBar(context, APP_NAME),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -35,4 +35,12 @@ class Confirmation extends StatelessWidget {
           ],
         ));
   }
+}
+
+AppBar appBar(BuildContext context, String title) {
+  return AppBar(
+    // Here we take the value from the MyHomePage object that was created by
+    // the App.build method, and use it to set our appbar title.
+    title: Text(title),
+  );
 }
