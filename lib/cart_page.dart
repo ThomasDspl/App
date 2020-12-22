@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_bloc.dart';
-import 'confirmation.dart';
 import 'main.dart';
 
 class PageCart extends StatefulWidget {
@@ -70,65 +69,29 @@ class _PageCartState extends State<PageCart> {
       );
     }
 
-    return MaterialApp(
-      title: APP_NAME,
-      onGenerateRoute: (settings) {
-        if (settings.name == '/') {
-          return MaterialPageRoute(
-              builder: (context) => MyHomePage(
-                    title: APP_NAME,
-                  ));
-        }
-
-        if (settings.name == ROUTE_CONFIRMATION) {
-          return MaterialPageRoute(builder: (context) => Confirmation());
-        }
-
-        return MaterialPageRoute(
-            builder: (context) => MyHomePage(
-                  title: APP_NAME,
-                ));
-      },
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primaryColor: COULEUR_PRINCIPALE,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        appBar: appBar(context, APP_NAME),
-        body: (cartBloc.cart.isNotEmpty)
-            ? RecetteListCart(
-                recette: cartBloc,
-              )
-            : Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 200,
-                      color: Colors.red[800],
-                    ),
-                    Text(
-                      "Panier vide",
-                      style: TextStyle(fontSize: 40),
-                    )
-                  ],
-                ),
+    return Scaffold(
+      appBar: appBar(context, APP_NAME),
+      body: (cartBloc.cart.isNotEmpty)
+          ? RecetteListCart(
+              recette: cartBloc,
+            )
+          : Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 200,
+                    color: Colors.red[800],
+                  ),
+                  Text(
+                    "Panier vide",
+                    style: TextStyle(fontSize: 40),
+                  )
+                ],
               ),
-      ),
+            ),
     );
   }
 }
@@ -150,7 +113,6 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
       setState(() {
         recette.state = false;
         Provider.of<CartBloc>(context, listen: false).clear(recette);
-        print(Provider.of<CartBloc>(context, listen: false).cart);
       });
     }
 
@@ -231,8 +193,8 @@ class RecetteListCart extends StatelessWidget {
     recette.cart.forEach((element) {
       element.state = false;
     });
-    Navigator.pushNamed(context, ROUTE_CONFIRMATION);
-    recette.clearAll();
+    Navigator.pushReplacementNamed(context, ROUTE_CONFIRMATION);
+    //recette.clearAll();
   }
 
   @override

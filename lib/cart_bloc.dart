@@ -24,7 +24,6 @@ class CartBloc with ChangeNotifier {
 
   void clearAll() {
     _cart.clear();
-    notifyListeners();
   }
 
   int totalPrice() {

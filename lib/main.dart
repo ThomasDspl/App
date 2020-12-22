@@ -159,7 +159,6 @@ class _RecetteWidgetState extends State<RecetteWidget> {
             Provider.of<CartBloc>(context, listen: false).clear(recette);
             break;
         }
-        print(Provider.of<CartBloc>(context, listen: false).cart);
       });
     }
 
@@ -334,7 +333,6 @@ List<Recette> getRecetteFromJson(String jsonData) {
   List<Recette> _listRecette = [];
   //var data = json.decode(jsonData);
   final parsed = jsonDecode(jsonData).cast<Map<String, dynamic>>();
-  print(parsed);
   _listRecette = parsed.map<Recette>((json) => Recette.fromJson(json)).toList();
   return _listRecette;
 }

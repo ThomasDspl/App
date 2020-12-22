@@ -1,9 +1,16 @@
+import 'package:App/cart_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'main.dart';
 
 class Confirmation extends StatelessWidget {
+  void viderCart(BuildContext context) {
+    Provider.of<CartBloc>(context, listen: false).clearAll();
+  }
+
   @override
   Widget build(BuildContext context) {
+    viderCart(context);
     return Scaffold(
         appBar: appBar(context, APP_NAME),
         body: Column(
@@ -18,7 +25,7 @@ class Confirmation extends StatelessWidget {
               'Commande envoyée !',
               style: TextStyle(
                 fontSize: 30.0,
-                fontFamily: 'Comfortaa',
+                //fontFamily: 'Comfortaa',
               ),
             ),
             Padding(
@@ -28,10 +35,13 @@ class Confirmation extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20.0,
-                  fontFamily: 'Comfortaa',
+                  //fontFamily: 'Comfortaa',
                 ),
               ),
             ),
+            ElevatedButton(
+                onPressed: () => Navigator.pushReplacementNamed(context, "/"),
+                child: Text("Ok"))
           ],
         ));
   }
