@@ -114,7 +114,7 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
                           child: Text(
                             widget.recette.description,
                             maxLines:
-                                (deviceHeight * 0.09 / defaultFontSize).toInt(),
+                                ((deviceHeight * 0.09) ~/ defaultFontSize),
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: defaultFontSize),
                           ),
