@@ -10,6 +10,7 @@ class Confirmation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     viderCart(context);
     return Scaffold(
         appBar: appBar(context, APP_NAME),
@@ -18,7 +19,8 @@ class Confirmation extends StatelessWidget {
           children: [
             Icon(
               Icons.check_circle,
-              size: 200.0,
+              //size: 200.0,
+              size: deviceWidth * 0.5,
               color: Colors.green,
             ),
             Text(

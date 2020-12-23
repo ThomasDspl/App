@@ -25,6 +25,8 @@ class FicheProduit extends StatefulWidget {
 class _FicheProduitState extends State<FicheProduit> {
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     var recette =
         Provider.of<RecetteDataBloc>(context).getRecette(widget.recette);
     void _checkbox(bool value) {
@@ -118,8 +120,10 @@ class _FicheProduitState extends State<FicheProduit> {
         children: [
           Image.asset(
             recette.photoUrl,
-            width: 600,
-            height: 240,
+            // width: 600,
+            // height: 240,
+            width: deviceWidth,
+            height: deviceHeight * 0.3,
             fit: BoxFit.cover,
           ),
           titleSection(recette.title, recette.prix),

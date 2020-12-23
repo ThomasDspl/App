@@ -58,6 +58,10 @@ class RecetteWidgetCart extends StatefulWidget {
 class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
+    double defaultFontSize = 14;
+
     var recette =
         Provider.of<RecetteDataBloc>(context).getRecette(widget.recette);
     void _setCheckBox() {
@@ -70,7 +74,8 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
     return Consumer<RecetteDataBloc>(
       builder: (context, value, child) => Container(
         padding: const EdgeInsets.all(4),
-        height: 125,
+        //height: 125,
+        height: deviceHeight * 0.16,
         child: Container(
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -82,8 +87,10 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 4),
-                  width: 125,
-                  height: 100,
+                  // width: 125,
+                  // height: 100,
+                  width: deviceWidth * 0.30,
+                  height: deviceHeight * 0.1,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5.0),
                     child: Image.asset(
@@ -102,11 +109,14 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
                               fontWeight: FontWeight.bold,
                             )),
                         Container(
-                          width: 190,
+                          //width: 190,
+                          width: deviceWidth * 0.45,
                           child: Text(
                             widget.recette.description,
-                            maxLines: 5,
+                            maxLines:
+                                (deviceHeight * 0.09 / defaultFontSize).toInt(),
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: defaultFontSize),
                           ),
                         )
                       ],

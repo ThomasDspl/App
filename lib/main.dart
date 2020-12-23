@@ -137,6 +137,8 @@ class _RecetteWidgetState extends State<RecetteWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     var recette =
         Provider.of<RecetteDataBloc>(context).getRecette(widget.recette);
     void _setCheckBox(bool state) {
@@ -166,8 +168,10 @@ class _RecetteWidgetState extends State<RecetteWidget> {
             child: Column(
               children: [
                 Container(
-                  width: 200,
-                  height: 100,
+                  // width: 200,
+                  // height: 100,
+                  height: deviceHeight * 0.13,
+                  width: deviceWidth,
                   child: InkWell(
                     onTap: () {
                       _awaitReturnValueFromDetailsScreen(context);
@@ -200,7 +204,7 @@ class _RecetteWidgetState extends State<RecetteWidget> {
                           child: Text(
                             widget.recette.description,
                             softWrap: true,
-                            maxLines: 5,
+                            maxLines: 4,
                             overflow: TextOverflow.ellipsis,
                           ),
                         )
