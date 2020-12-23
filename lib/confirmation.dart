@@ -40,7 +40,8 @@ class Confirmation extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, "/"),
+                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                    context, "/", (route) => false),
                 child: Text("Ok"))
           ],
         ));

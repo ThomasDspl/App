@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'dart:async';
 import 'package:App/cart_page.dart';
 import 'package:App/data_recette_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'fiche_produit.dart' as FicheProduit;
+import 'fiche_produit.dart';
 import 'cart_bloc.dart';
 import 'confirmation.dart';
 
@@ -19,67 +18,59 @@ const String json = '''
 [
     {
         "id": "0",
-        "name": "spaghetti bolo_gnaise",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tellus suscipit, mollis purus ac, auctor risus. Nam lacinia erat ac tellus accumsan, ac accumsan mauris tempus. Etiam eu ornare enim, ut tincidunt velit. Fusce cursus, enim eget tincidunt tempus, sapien sapien tincidunt orci, sed blandit purus sapien sit amet magna. Donec auctor lacinia odio non ultrices. Nam laoreet accumsan sapien id molestie. Phasellus laoreet gravida eros quis vestibulum. Phasellus pretium eros a libero cursus lobortis. Curabitur eu dui et est tincidunt varius commodo a sem. Etiam et arcu ut enim egestas cursus. Mauris non convallis sem. Donec eget leo non neque vulputate tempus.",
-        "prix": 10,
+        "name": "Spaghetti bolognaise",
+        "description": "De bonne spaghetti avec leur sauce tomate légèrement sucré et sa viande de boeuf tendre et savoureuse.",
+        "prix": 7,
         "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","blabla","Lorem ipsum"]
+        "allergenes": ["Céleri","Céréale contenant du gluten","Fruit à coque"]
     },
     {
         "id": "1",
-        "name": "spaghetti bolo_gnaise",
-        "description": "Lorem ipsum dolor sit amet.",
-        "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["pâtes","sauce tomate","boeuf"]
+        "name": "Hachi parmentier",
+        "description": "Un hachi parmentier confectionner avec des pommes de terre de la région et une déliceuse viande de boeuf.",
+        "prix": 10,
+        "photo": "images/parmentier.jpg",
+        "allergenes": ["Lait"]
     },
     {
         "id": "2",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
+        "name": "Cheeseburger",
+        "description": "Un délicieux cheeseburger maison avec du beacon, du boeuf, de la salade et son frommage cheedar.",
         "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
+        "photo": "images/Cheeseburger.png",
+        "allergenes": ["Céréales contenant du gluten","Lait","Moutarde"]
     },
     {
         "id": "3",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
-        "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
+        "name": "Pizza",
+        "description": "Une pizza avec une pâte légère et croustiante garnit jusqu'à rabord.",
+        "prix": 17,
+        "photo": "images/pizza.jpg",
+        "allergenes": ["Lait"]
     },
     {
         "id": "4",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
-        "prix": 10,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
+        "name": "Fish and Chip",
+        "description": "Un délicieux filet de colin frit avec de déliceuses frites.",
+        "prix": 12,
+        "photo": "images/fish_and_chip.jpg",
+        "allergenes": ["Céréales contenant du gluten","Lait","Mollusque", "Oeufs", "Poissons"]
     },
     {
         "id": "5",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
-        "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
+        "name": "Salade de fruit",
+        "description": "Un déliceux mélange de fruit rafréchissant.",
+        "prix": 8,
+        "photo": "images/salade_fruit.jpg",
+        "allergenes": ["Aucun allergène"]
     },
     {
         "id": "6",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
-        "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
-    },
-    {
-        "id": "7",
-        "name": "spaghetti bolo_gnaise",
-        "description": "MES PRECIEUX ..... SPAGHETTI",
-        "prix": 15,
-        "photo": "images/spaghetti_bolo_gnaise.png",
-        "allergenes": ["Lorem ipsum","Lorem ipsum","Lorem ipsum"]
+        "name": "Glace vanille",
+        "description": "Une glace à la vanille rafraichissante.",
+        "prix": 9,
+        "photo": "images/glace_vanille.jpg",
+        "allergenes": ["Lait "]
     }
 ]
 ''';
@@ -137,7 +128,7 @@ class RecetteWidget extends StatefulWidget {
 class _RecetteWidgetState extends State<RecetteWidget> {
   void _awaitReturnValueFromDetailsScreen(BuildContext context) async {
     final result = await Navigator.pushNamed(context, ROUTE_DETAIL,
-        arguments: FicheProduit.FicheProduitArguments(widget.recette));
+        arguments: FicheProduitArguments(widget.recette));
 
     setState(() {
       if (result != null) widget.recette.state = result;
@@ -174,14 +165,19 @@ class _RecetteWidgetState extends State<RecetteWidget> {
             //padding: const EdgeInsets.all(4),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {
-                    _awaitReturnValueFromDetailsScreen(context);
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5.0),
-                    child: Image.asset(
-                      recette.photoUrl,
+                Container(
+                  width: 200,
+                  height: 100,
+                  child: InkWell(
+                    onTap: () {
+                      _awaitReturnValueFromDetailsScreen(context);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5.0),
+                      child: Image.asset(
+                        recette.photoUrl,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -272,10 +268,10 @@ class MyApp extends StatelessWidget {
           }
 
           if (settings.name == ROUTE_DETAIL) {
-            final FicheProduit.FicheProduitArguments args = settings.arguments;
+            final FicheProduitArguments args = settings.arguments;
 
             return MaterialPageRoute(builder: (context) {
-              return FicheProduit.FicheProduit(recette: args.recette);
+              return FicheProduit(recette: args.recette);
             });
           }
           return MaterialPageRoute(
@@ -365,31 +361,30 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {});
     }
 
-    var bloc = Provider.of<CartBloc>(context, listen: false);
-
-    int totalCount = 0;
-    if (bloc.cart.length > 0) {
-      totalCount = bloc.cart.length;
-    }
-    Container _buildCartIcon(totalCount) => Container(
+    Container _buildCartIcon() => Container(
         alignment: Alignment.center,
+        padding: EdgeInsets.only(right: 4),
         child: Stack(
           children: <Widget>[
             new Icon(Icons.shopping_cart),
-            // new Positioned(
-            //   child: new Icon(
-            //     Icons.circle,
-            //     color: Color.fromRGBO(100, 0, 0, 1),
-            //     size: 15,
-            //   ),
-            //   left: 10,
-            // ),
-            // new Positioned(
-            //   child:
-            //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
-            //   left: 15,
-            //   top: 2,
-            // )
+            new Positioned(
+              child: new Icon(
+                Icons.circle,
+                color: Colors.red[300],
+                size: 15,
+              ),
+              left: 10,
+            ),
+            new Positioned(
+              child: Consumer<CartBloc>(
+                builder: (context, value, child) {
+                  return Text(value.cart.length.toString(),
+                      style: TextStyle(fontSize: 10));
+                },
+              ),
+              left: 15,
+              top: 2,
+            )
           ],
         ));
     return AppBar(
@@ -403,7 +398,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onTap: () {
                     _route(context);
                   },
-                  child: _buildCartIcon(totalCount),
+                  child: _buildCartIcon(),
                 ),
               )
             : Text("")

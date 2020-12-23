@@ -109,42 +109,23 @@ class _FicheProduitState extends State<FicheProduit> {
           padding: const EdgeInsets.all(32),
         );
 
-    return MaterialApp(
-      title: APP_NAME,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primaryColor: COULEUR_PRINCIPALE,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        // appBar: AppBar(
-        //   title: Text(APP_NAME),
-        // ),
-        appBar: appBar(context, APP_NAME),
-        body: ListView(
-          children: [
-            Image.asset(
-              recette.photoUrl,
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-            ),
-            titleSection(recette.title, recette.prix),
-            textSection(),
-            textallergenes(),
-          ],
-        ),
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text(APP_NAME),
+      // ),
+      appBar: appBar(context, APP_NAME),
+      body: ListView(
+        children: [
+          Image.asset(
+            recette.photoUrl,
+            width: 600,
+            height: 240,
+            fit: BoxFit.cover,
+          ),
+          titleSection(recette.title, recette.prix),
+          textSection(),
+          textallergenes(),
+        ],
       ),
     );
   }
@@ -156,31 +137,30 @@ class _FicheProduitState extends State<FicheProduit> {
       setState(() {});
     }
 
-    var bloc = Provider.of<CartBloc>(context, listen: false);
-
-    int totalCount = 0;
-    if (bloc.cart.length > 0) {
-      totalCount = bloc.cart.length;
-    }
-    Container _buildCartIcon(totalCount) => Container(
+    Container _buildCartIcon() => Container(
+        padding: EdgeInsets.only(right: 4),
         alignment: Alignment.center,
         child: Stack(
           children: <Widget>[
             new Icon(Icons.shopping_cart),
-            // new Positioned(
-            //   child: new Icon(
-            //     Icons.circle,
-            //     color: Color.fromRGBO(100, 0, 0, 1),
-            //     size: 15,
-            //   ),
-            //   left: 10,
-            // ),
-            // new Positioned(
-            //   child:
-            //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
-            //   left: 15,
-            //   top: 2,
-            // )
+            new Positioned(
+              child: new Icon(
+                Icons.circle,
+                color: Colors.red[300],
+                size: 15,
+              ),
+              left: 10,
+            ),
+            new Positioned(
+              child: Consumer<CartBloc>(
+                builder: (context, value, child) {
+                  return Text(value.cart.length.toString(),
+                      style: TextStyle(fontSize: 10));
+                },
+              ),
+              left: 15,
+              top: 2,
+            )
           ],
         ));
     return AppBar(
@@ -194,7 +174,7 @@ class _FicheProduitState extends State<FicheProduit> {
                   onTap: () {
                     _route(context);
                   },
-                  child: _buildCartIcon(totalCount),
+                  child: _buildCartIcon(),
                 ),
               )
             : Text("")

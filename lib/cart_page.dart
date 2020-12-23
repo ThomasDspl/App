@@ -16,57 +16,8 @@ class _PageCartState extends State<PageCart> {
   @override
   Widget build(BuildContext context) {
     var cartBloc = Provider.of<CartBloc>(context);
-    AppBar appBar(BuildContext context, String title, {bool panier = true}) {
-      void _route(BuildContext context) async {
-        await Navigator.pushNamed(context, ROUTE_CART);
-
-        setState(() {});
-      }
-
-      var bloc = Provider.of<CartBloc>(context, listen: false);
-
-      int totalCount = 0;
-      if (bloc.cart.length > 0) {
-        totalCount = bloc.cart.length;
-      }
-      Container _buildCartIcon(totalCount) => Container(
-          alignment: Alignment.center,
-          child: Stack(
-            children: <Widget>[
-              new Icon(Icons.shopping_cart),
-              // new Positioned(
-              //   child: new Icon(
-              //     Icons.circle,
-              //     color: Color.fromRGBO(100, 0, 0, 1),
-              //     size: 15,
-              //   ),
-              //   left: 10,
-              // ),
-              // new Positioned(
-              //   child:
-              //       new Text(totalCount.toString(), style: TextStyle(fontSize: 10)),
-              //   left: 15,
-              //   top: 2,
-              // )
-            ],
-          ));
-      return AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(title),
-        actions: <Widget>[
-          (panier)
-              ? Container(
-                  child: GestureDetector(
-                    onTap: () {
-                      _route(context);
-                    },
-                    child: _buildCartIcon(totalCount),
-                  ),
-                )
-              : Text("")
-        ],
-      );
+    AppBar appBar(BuildContext context, String title) {
+      return AppBar(title: Text(title));
     }
 
     return Scaffold(
@@ -131,11 +82,13 @@ class _RecetteWidgetCartState extends State<RecetteWidgetCart> {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 4),
+                  width: 125,
+                  height: 100,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5.0),
                     child: Image.asset(
                       recette.photoUrl,
-                      width: 125,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
